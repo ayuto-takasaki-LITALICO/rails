@@ -67,9 +67,10 @@ module ActionDispatch
       def fallback_to_html_format_if_invalid_mime_type(request)
         # If the MIME type for the request is invalid then the @exceptions_app may not
         # be able to handle it. To make it easier to handle, we switch to HTML.
-        request.formats
+        ActionDispatch::Request.new(request.env.clone).formats
       rescue ActionDispatch::Http::MimeNegotiation::InvalidType
         request.set_header "HTTP_ACCEPT", "text/html"
+        request.set_header "CONTENT_TYPE", "application/x-www-form-urlencoded"
       end
 
       def pass_response(status)
